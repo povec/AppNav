@@ -33,7 +33,7 @@ flowchart TD
     Stack[(BackStack)]
 
 %% 3. 出口（物理）
-    Provider[(AppNavEntryProvider)]
+    Provider[(EntryProvider)]
     Entries[[NavEntries]]
     Strategy{SceneStrategy}
     Scene{{Scene}}
