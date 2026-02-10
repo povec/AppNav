@@ -1,0 +1,61 @@
+/*
+ * Copyright 2024 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.github.povec.appnav.core
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.SaveableStateHolder
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavEntryDecorator
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.compose.LocalSavedStateRegistryOwner
+
+/**
+ * Returns a [AppNavSaveableStateHolderNavEntryDecorator] that is remembered across recompositions.
+ *
+ * @param saveableStateHolder the [SaveableStateHolder] that scopes the returned NavEntryDecorator
+ */
+@Composable
+fun <T : Any> rememberAppNavSaveableStateHolderNavEntryDecorator(
+    saveableStateHolder: SaveableStateHolder = rememberSaveableStateHolder()
+): AppNavSaveableStateHolderNavEntryDecorator<T> =
+    remember(saveableStateHolder) { AppNavSaveableStateHolderNavEntryDecorator(saveableStateHolder) }
+
+/**
+ * Wraps the content of a [NavEntry] with a [SaveableStateHolder.SaveableStateProvider] to ensure
+ * that calls to [rememberSaveable] within the content work properly and that state can be saved.
+ * Also provides the content of a [NavEntry] with a [SavedStateRegistryOwner] which can be accessed
+ * in the content with [LocalSavedStateRegistryOwner].
+ *
+ * This [NavEntryDecorator] is the only one that is **required** as saving state is considered a
+ * non-optional feature.
+ *
+ * @param saveableStateHolder the [SaveableStateHolder] that holds the state defined with
+ *   [rememberSaveable]. A saved state can only be restored from the [SaveableStateHolder] that it
+ *   was saved with.
+ */
+class AppNavSaveableStateHolderNavEntryDecorator<T : Any>(
+    saveableStateHolder: SaveableStateHolder
+) :
+    NavEntryDecorator<T>(
+        onPop = { contentKey -> saveableStateHolder.removeState(contentKey.toString()) },
+        decorate = { entry ->
+            saveableStateHolder.SaveableStateProvider(entry.contentKey.toString()) { entry.Content() }
+        },
+    )
