@@ -2,7 +2,7 @@
 
 [![Platform](https://img.shields.io/badge/Platform-Android-green.svg)](https://developer.android.com/jetpack/compose)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.0-purple.svg)](https://kotlinlang.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **AppNav** は、Android の次世代ナビゲーション基盤 `Navigation3` を高度に抽象化し、**「論理構造（Constraint）」と「物理配置（Scene）」の完全な分離**を実現するマルチレイアウト・フレームワークです。
 
